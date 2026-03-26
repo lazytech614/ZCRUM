@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ClerkProvider } from "@clerk/nextjs";
+import Header from "@/components/global/header";
+import { shadesOfPurple } from "@clerk/themes";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,9 +21,44 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.className} h-full`} suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="dotted-bg">
+        <ClerkProvider 
+          appearance={{
+            baseTheme: shadesOfPurple,
+            variables: {
+              colorPrimary: "#3b82f6",
+              colorBackground: "#1a202c",
+              colorInputBackground: "#2D3748",
+              colorInputText: "#F3F4F6",
+            },
+            elements: {
+              formButtonPrimary: "bg-purple-600 hover:bg-purple-700 text-white",
+              card: "bg-gray-800",
+              headerTitle: "text-blue-400",
+              headerSubtitle: "text-gray-400",
+            },
+          }}
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            <main className="min-h-screen">
+              {children}
+            </main>
+            <footer className="bg-gray-900 py-12">
+              <div className="container mx-auto text-center px-4 text-gray-200">
+                <p className="text-sm">Made with love by me</p>
+              </div>
+            </footer>
+          </ThemeProvider>
+        </ClerkProvider>
+      </body>
     </html>
   );
 }
