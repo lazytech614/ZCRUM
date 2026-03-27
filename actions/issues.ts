@@ -15,8 +15,6 @@ export async function createIssue({projectId, data}: {
     }
 }) {
     try {
-        console.log("🔴🔴🔴🔴🔴ProjectId_1: ", projectId)
-
         const {userId, orgId } = await auth()
 
         if(!userId || !orgId) throw new Error("Unauthenticated")
@@ -110,11 +108,12 @@ export async function getIssuesForSprint(sprintId: string) {
             ],
             include: {
                 assignee: true,
-                reporter: true
+                reporter: true,
+                sprint: true
             }
         })
 
-        return issues
+        return issues.map(serializeIssue)
     }catch(err) {
         console.error("ERROR_IN_GET_ISSUES_FOR_SPRINT_SERVER_ACTION", (err as Error).message)
         throw new Error((err as Error).message)
@@ -122,6 +121,46 @@ export async function getIssuesForSprint(sprintId: string) {
 }
 
 export async function deleteIssue(issueId: string) {
+    try {
+        const {userId, orgId, orgRole} = await auth()
+
+        if(!userId || !orgId) throw new Error("Unauthenticated")
+
+        const user = await prisma.user.findUnique({
+            where: {
+                clerkUserId: userId
+            }
+        })
+
+        if(!user) throw new Error("User not found")
+
+        const issue = await prisma.issue.findUnique({
+            where: {
+                id: issueId
+            },
+            include: {
+                project: true
+            }
+        })
+
+        if(!issue) throw new Error("Issue not found")
+
+        if(orgRole !== "org:admin" && issue.project.organizationId !== orgId) throw new Error("You don't have permission to delete this issue")
+
+        const deleted = await prisma.issue.delete({
+            where: {
+                id: issueId
+            }
+        })
+
+        return {success: true, deleted}
+    }catch(err) {
+        console.error("ERROR_IN_DELETE_ISSUE_SERVER_ACTION", (err as Error).message)
+        throw new Error((err as Error).message)
+    }
+} 
+
+export async function updateIsuue(issueId: string, data: any) {
     try {
         const {userId, orgId} = await auth()
 
@@ -138,23 +177,36 @@ export async function deleteIssue(issueId: string) {
         const issue = await prisma.issue.findUnique({
             where: {
                 id: issueId
+            },
+            include: {
+                project: true
             }
         })
 
         if(!issue) throw new Error("Issue not found")
 
-        const deleted = await prisma.issue.delete({
+        if(issue.project.organizationId !== orgId) throw new Error("You don't have permission to update this issue")
+
+        const updatedIssue = await prisma.issue.update({
             where: {
                 id: issueId
+            },
+            data: {
+                status: data.status,
+                priority: data.priority,
+            },
+            include: {
+                assignee: true,
+                reporter: true
             }
         })
 
-        return deleted
+        return updatedIssue
     }catch(err) {
-        console.error("ERROR_IN_DELETE_ISSUE_SERVER_ACTION", (err as Error).message)
+        console.error("ERROR_IN_UPDATE_ISSUE_SERVER_ACTION", (err as Error).message)
         throw new Error((err as Error).message)
     }
-} 
+}
 
 export async function updateIssueOrder(updatedIssues: any) {
    try {
@@ -189,4 +241,77 @@ export async function updateIssueOrder(updatedIssues: any) {
         console.error("ERROR_IN_UPDATE_ISSUE_ORDER_SERVER_ACTION", (err as Error).message)
         throw new Error((err as Error).message)
    } 
+}
+
+function serializeIssue(issue: any) {
+  return {
+    ...issue,
+    createdAt: issue.createdAt?.toISOString?.(),
+    updatedAt: issue.updatedAt?.toISOString?.(),
+
+    sprint: issue.sprint
+      ? {
+          ...issue.sprint,
+          createdAt: issue.sprint.createdAt?.toISOString?.(),
+          updatedAt: issue.sprint.updatedAt?.toISOString?.(),
+        }
+      : null,
+
+    assignee: issue.assignee
+      ? {
+          ...issue.assignee,
+          createdAt: issue.assignee.createdAt?.toISOString?.(),
+          updatedAt: issue.assignee.updatedAt?.toISOString?.(),
+        }
+      : null,
+
+    reporter: issue.reporter
+      ? {
+          ...issue.reporter,
+          createdAt: issue.reporter.createdAt?.toISOString?.(),
+          updatedAt: issue.reporter.updatedAt?.toISOString?.(),
+        }
+      : null,
+  };
+}
+
+export async function getUserIssues(userId: string) {
+    try {
+        const {orgId} = await auth()
+
+        if(!userId || !orgId) throw new Error("Unauthenticated")
+
+        const user = await prisma.user.findUnique({
+            where: {
+                clerkUserId: userId
+            }
+        })
+
+        if(!user) throw new Error("User not found")
+
+        const issues = await prisma.issue.findMany({
+            where: {
+                OR: [
+                    {assigneeId: user.id},
+                    {reporterId: user.id}
+                ],
+                project: {
+                    organizationId: orgId
+                }
+            },
+            include: {
+                assignee: true,
+                reporter: true,
+                project: true
+            },
+            orderBy: {
+                updatedAt: "desc"
+            },
+        })
+
+        return issues
+    }catch(err) {
+        console.error("ERROR_IN_GET_USER_ISSUES_SERVER_ACTION", (err as Error).message)
+        throw new Error((err as Error).message)
+    }
 }

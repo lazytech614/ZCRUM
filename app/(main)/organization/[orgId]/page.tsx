@@ -1,10 +1,13 @@
 import { getOrganization } from "@/actions/organizations"
 import OrgSwitcher from "@/components/organization/org-switcher"
 import ProjectList from "@/components/organization/project-list"
+import UserIssues from "@/components/organization/user-issues"
+import { auth } from "@clerk/nextjs/server"
 
 const OrganisationPage = async({params}: any) => {
 
   const {orgId} = await params
+  const {userId} = await auth()
 
   const organization = await getOrganization(orgId)
 
@@ -12,6 +15,10 @@ const OrganisationPage = async({params}: any) => {
     return (
       <div>Organization not found</div>
     )
+  }
+
+  if (!userId) {
+    return <div>Please sign in</div>
   }
 
   return (
@@ -26,9 +33,9 @@ const OrganisationPage = async({params}: any) => {
       <div className="mb-4">
         <ProjectList orgId={organization.id} />
       </div>
-      {/* <div className="mt-8">
+      <div className="mt-8">
         <UserIssues userId={userId} />
-      </div> */}
+      </div>
     </div>
   )
 }

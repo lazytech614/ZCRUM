@@ -6,8 +6,6 @@ import { notFound } from "next/navigation";
 export default async function ProjectPage({ params }: any) {
   const { projectId } = await params;
 
-  console.log("ProjectId_1: ", projectId)
-
   const project = await getProject(projectId);
 
   if (!project) {

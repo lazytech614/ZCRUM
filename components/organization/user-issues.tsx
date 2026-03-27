@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { getUserIssues } from "@/actions/organizations";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import IssueCard from "@/components/issue-card";
+import { getUserIssues } from "@/actions/issues";
+import IssueCard from "../project/issue-card";
 
 export default async function UserIssues({ userId }: { userId: string }) {
   const issues = await getUserIssues(userId);
@@ -11,10 +11,10 @@ export default async function UserIssues({ userId }: { userId: string }) {
   }
 
   const assignedIssues = issues.filter(
-    (issue) => issue.assignee.clerkUserId === userId
+    (issue: any) => issue.assignee.clerkUserId === userId
   );
   const reportedIssues = issues.filter(
-    (issue) => issue.reporter.clerkUserId === userId
+    (issue: any) => issue.reporter.clerkUserId === userId
   );
 
   return (

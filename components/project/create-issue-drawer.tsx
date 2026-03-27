@@ -44,7 +44,6 @@ export default function IssueCreationDrawer({
   orgId: string;
 }) {
 
-  console.log("XXXXXX: ", projectId)
   const {
     loading: createIssueLoading,
     fn: createIssueFn,

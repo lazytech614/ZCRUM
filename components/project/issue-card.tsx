@@ -13,6 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 import UserAvatar from "../global/user-avatar";
 import IssueDetailsDialog from "./issue-details-dialog";
+import { statuses } from "@/constants/statuses";
 
 const priorityColor = {
   LOW: "border-green-600",
@@ -49,20 +50,20 @@ export default function IssueCard({
     addSuffix: true,
   });
 
+  const statusObj = statuses.find(s => s.key === issue.status)
+
   return (
     <>
       <Card
-        className="cursor-pointer hover:shadow-md transition-shadow"
+        className={`border-t-2 ${priorityColor[issue.priority as keyof typeof priorityColor]} rounded-lg cursor-pointer hover:shadow-md transition-shadow`}
         onClick={() => setIsDialogOpen(true)}
       >
-        <CardHeader
-          className={`border-t-2 ${priorityColor[issue.priority as keyof typeof priorityColor]} rounded-lg`}
-        >
+        <CardHeader>
           <CardTitle>{issue.title}</CardTitle>
         </CardHeader>
 
         <CardContent className="flex gap-2 -mt-3">
-          {showStatus && <Badge>{issue.status}</Badge>}
+          {showStatus && <Badge>{statusObj?.name}</Badge>}
           <Badge variant="outline" className="-ml-1">
             {issue.priority}
           </Badge>

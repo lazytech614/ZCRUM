@@ -21,10 +21,11 @@ import { BarLoader } from "react-spinners";
 import { ExternalLink } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { deleteIssue, updateIssueOrder } from "@/actions/issues";
+import { deleteIssue, updateIsuue } from "@/actions/issues";
 import useFetch from "@/hooks/useFetch";
 import UserAvatar from "../global/user-avatar";
 import { statuses } from "@/constants/statuses";
+import { toast } from "sonner";
 
 const priorityOptions = ["LOW", "MEDIUM", "HIGH", "URGENT"];
 
@@ -62,7 +63,7 @@ export default function IssueDetailsDialog({
     error: updateError,
     fn: updateIssueFn,
     data: updated,
-  } = useFetch(updateIssueOrder);
+  } = useFetch(updateIsuue);
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this issue?")) {
@@ -70,7 +71,12 @@ export default function IssueDetailsDialog({
     }
   };
 
-  const handleStatusChange = async (newStatus: "ACTIVE" | "COMPLETED" | "PLANNED") => {
+  const handleStatusChange = async (newStatus: "TO_DO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE") => {
+    if(issue.sprint.status !== "ACTIVE") {
+      toast.warning("This issue is not in active sprint");
+      return
+    }
+
     setStatus(newStatus);
     updateIssueFn(issue.id, { status: newStatus, priority });
   };
@@ -97,20 +103,22 @@ export default function IssueDetailsDialog({
     router.push(`/project/${issue.projectId}?sprint=${issue.sprintId}`);
   };
 
-  const isProjectPage = !pathname.startsWith("/project/");
+  const isProjectPage = pathname.startsWith("/project/");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center relative">
             <DialogTitle className="text-3xl">{issue.title}</DialogTitle>
-            {isProjectPage && (
+            {!isProjectPage && (
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleGoToProject}
                 title="Go to Project"
+                className="absolute -right-2 top-4
+                "
               >
                 <ExternalLink className="h-4 w-4" />
               </Button>

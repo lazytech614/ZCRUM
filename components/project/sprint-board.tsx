@@ -7,9 +7,6 @@ import { Button } from "@/components/ui/button";
 import { BarLoader } from "react-spinners";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 
-
-// import { getIssuesForSprint, updateIssueOrder } from "@/actions/issues";
-
 // import IssueCreationDrawer from "./create-issue";
 // import IssueCard from "@/components/issue-card";
 // import BoardFilters from "./board-filters";
@@ -19,6 +16,7 @@ import SprintManager from "./sprint-manager";
 import IssueCreationDrawer from "./create-issue-drawer";
 import { getIssuesForSprint, updateIssueOrder } from "@/actions/issues";
 import IssueCard from "./issue-card";
+import BoardFilters from "./board-filters";
 
 function reorder(list: any, startIndex: number, endIndex: number) {
   const result = Array.from(list);
@@ -29,7 +27,6 @@ function reorder(list: any, startIndex: number, endIndex: number) {
 }
 
 export default function SprintBoard({ sprints, projectId, orgId }: any) {
-  console.log("ProjectId_2: ", projectId)
 
   const [currentSprint, setCurrentSprint] = useState(
     sprints.find((spr: any) => spr.status === "ACTIVE") || sprints[0]
@@ -48,9 +45,15 @@ export default function SprintBoard({ sprints, projectId, orgId }: any) {
 
   const [filteredIssues, setFilteredIssues] = useState(issues);
 
-//   const handleFilterChange = (newFilteredIssues: any) => {
-//     setFilteredIssues(newFilteredIssues);
-//   };
+  useEffect(() => {
+    if (issues) {
+      setFilteredIssues(issues);
+    }
+  }, [issues]);
+
+  const handleFilterChange = (newFilteredIssues: any) => {
+    setFilteredIssues(newFilteredIssues);
+  };
 
   useEffect(() => {
     if (currentSprint.id) {
@@ -140,11 +143,11 @@ export default function SprintBoard({ sprints, projectId, orgId }: any) {
     }
 
     const sortedIssues = newOrderedData.sort((a, b) => a.order - b.order);
-    // setIssues({newOrderedData, sortedIssues});
-    setIssues(sortedIssues);
+      // setIssues({newOrderedData, sortedIssues});
+      setIssues(sortedIssues);
 
-    updateIssueOrderFn(sortedIssues);
-  };
+      updateIssueOrderFn(sortedIssues);
+    };
 
   if (issuesError) return <div>Error loading issues</div>;
 
@@ -157,7 +160,7 @@ export default function SprintBoard({ sprints, projectId, orgId }: any) {
         projectId={projectId}
       />
 
-      {/* {issues && !issuesLoading && (
+      {issues && !issuesLoading && (
         <BoardFilters issues={issues} onFilterChange={handleFilterChange} />
       )}
 
@@ -166,7 +169,7 @@ export default function SprintBoard({ sprints, projectId, orgId }: any) {
       )}
       {(updateIssuesLoading || issuesLoading) && (
         <BarLoader className="mt-4" width={"100%"} color="#36d7b7" />
-      )} */}
+      )}
 
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 bg-slate-900 p-4 rounded-lg">
@@ -188,7 +191,7 @@ export default function SprintBoard({ sprints, projectId, orgId }: any) {
                         key={issue.id}
                         draggableId={issue.id}
                         index={index}
-                        // isDragDisabled={updateIssuesLoading}
+                        isDragDisabled={updateIssuesLoading}
                       >
                         {(provided) => (
                           <div
