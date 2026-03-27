@@ -101,7 +101,7 @@ const BoardFilters = ({issues, onFilterChange}: {
             </SelectTrigger>
             <SelectContent>
               {priorities.map((priority) => (
-                <SelectItem value={priority}>{priority}</SelectItem>
+                <SelectItem key={priority} value={priority}>{priority}</SelectItem>
               ))}
             </SelectContent>
           </Select>

@@ -19,7 +19,8 @@ export default function CreateProjectPage() {
   const router = useRouter();
   const { isLoaded: isOrgLoaded, membership } = useOrganization();
   const { isLoaded: isUserLoaded } = useUser();
-  const [isAdmin, setIsAdmin] = useState(false);
+
+  const isAdmin = isOrgLoaded && isUserLoaded && membership?.role === "org:admin";
 
   const {
     register,
@@ -28,12 +29,6 @@ export default function CreateProjectPage() {
   } = useForm({
     resolver: zodResolver(projectSchema),
   });
-
-  useEffect(() => {
-    if (isOrgLoaded && isUserLoaded && membership) {
-      setIsAdmin(membership.role === "org:admin");
-    }
-  }, [isOrgLoaded, isUserLoaded, membership]);
 
   const {
     loading,
@@ -56,7 +51,7 @@ export default function CreateProjectPage() {
         toast.success("Project created successfully");
         router.push(`/project/${project.id}`);
     }
-  }, [loading]);
+  }, [project]);
 
   if (!isOrgLoaded || !isUserLoaded) {
     return null;

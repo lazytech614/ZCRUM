@@ -3,7 +3,6 @@
 import prisma from "@/lib/prisma"
 import { auth } from "@clerk/nextjs/server"
 import { isAfter, isBefore } from "date-fns";
-import { success } from "zod";
 
 export async function createSprint({
     projectId, 
@@ -88,9 +87,6 @@ export async function updateSprintStatus(sprintId: string, newStatus: "ACTIVE" |
         const now = new Date()
         const startDate = new Date(sprint.startDate)
         const endDate = new Date(sprint.endDate)
-
-        const canStart = isBefore(now, endDate) && isAfter(now, startDate) && newStatus === "PLANNED"
-        const canEnd = newStatus === "ACTIVE" && isAfter(now, endDate)
 
         if(newStatus === "ACTIVE" && (now < startDate || now > endDate)) throw new Error("Cannot start sprint before start date or after end date")
 

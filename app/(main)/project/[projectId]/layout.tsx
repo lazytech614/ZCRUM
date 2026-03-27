@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import { BarLoader } from "react-spinners"
 
 const ProjectLayout = async({children}: {children: React.ReactNode}) => {
   return (
