@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react"
 
 const Hero = () => {
   return (
-    <section className="container mx-auto px-4 py-20 text-center">
+    <section className="container mx-auto px-5 py-20 text-center">
         <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold gradient-title pb-6 flex flex-col">
             Streamline Your Workflow<br />
             <span className="flex mx-auto gap-3 sm:gap-4 items-center">

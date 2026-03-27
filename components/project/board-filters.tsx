@@ -12,8 +12,6 @@ const BoardFilters = ({issues, onFilterChange}: {
   onFilterChange: (filteredIssues: IssueType[]) => void
 }) => {
 
-  console.log(issues)
-
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>([])
   const [selectedPriority, setSelectedPriority] = useState("")

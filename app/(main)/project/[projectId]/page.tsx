@@ -19,7 +19,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-5">
       <SprintCreationForm
         projectTitle={project.name}
         projectId={projectId}

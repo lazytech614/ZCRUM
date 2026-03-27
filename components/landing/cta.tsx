@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react"
 
 const CTA = () => {
   return (
-    <section className="py-20 text-center px-4">
+    <section className="py-20 text-center px-5">
         <div className="container mx-auto">
           <h3 className="text-3xl font-bold mb-6">
             Ready to Transform Your Workflow?
