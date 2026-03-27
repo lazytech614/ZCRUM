@@ -26,6 +26,7 @@ import useFetch from "@/hooks/useFetch";
 import UserAvatar from "../global/user-avatar";
 import { statuses } from "@/constants/statuses";
 import { toast } from "sonner";
+import { IssueType } from "@/types";
 
 const priorityOptions = ["LOW", "MEDIUM", "HIGH", "URGENT"];
 
@@ -39,7 +40,7 @@ export default function IssueDetailsDialog({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  issue: any;
+  issue: IssueType;
   onDelete?: (...args: any[]) => void;
   onUpdate?: (...args: any[]) => void;
   borderCol?: string;
@@ -71,8 +72,8 @@ export default function IssueDetailsDialog({
     }
   };
 
-  const handleStatusChange = async (newStatus: "TO_DO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE") => {
-    if(issue.sprint.status !== "ACTIVE") {
+  const handleStatusChange = async (newStatus: "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE") => {
+    if(issue.sprint?.status !== "ACTIVE") {
       toast.warning("This issue is not in active sprint");
       return
     }
@@ -97,7 +98,7 @@ export default function IssueDetailsDialog({
   }, [deleted, updated, deleteLoading, updateLoading]);
 
   const canChange =
-    user?.id === issue.reporter.clerkUserId || membership?.role === "org:admin";
+    user?.id === issue.reporter?.clerkUserId || membership?.role === "org:admin";
 
   const handleGoToProject = () => {
     router.push(`/project/${issue.projectId}?sprint=${issue.sprintId}`);

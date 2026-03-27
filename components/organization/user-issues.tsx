@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getUserIssues } from "@/actions/issues";
 import IssueCard from "../project/issue-card";
+import { IssueType } from "@/types";
 
 export default async function UserIssues({ userId }: { userId: string }) {
   const issues = await getUserIssues(userId);
@@ -11,10 +12,10 @@ export default async function UserIssues({ userId }: { userId: string }) {
   }
 
   const assignedIssues = issues.filter(
-    (issue: any) => issue.assignee.clerkUserId === userId
+    (issue: IssueType) => issue.assignee?.clerkUserId === userId
   );
   const reportedIssues = issues.filter(
-    (issue: any) => issue.reporter.clerkUserId === userId
+    (issue: IssueType) => issue.reporter?.clerkUserId === userId
   );
 
   return (
@@ -41,10 +42,10 @@ export default async function UserIssues({ userId }: { userId: string }) {
   );
 }
 
-function IssueGrid({ issues }: any) {
+function IssueGrid({ issues }: { issues: IssueType[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {issues.map((issue: any) => (
+      {issues.map((issue: IssueType) => (
         <IssueCard key={issue.id} issue={issue} showStatus />
       ))}
     </div>

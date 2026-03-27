@@ -21,7 +21,7 @@ import { format, addDays } from "date-fns";
 
 import { createSprint } from "@/actions/sprints";
 import useFetch from "@/hooks/useFetch";
-import { sprintSchema } from "@/lib/formSchema";
+import { SprintFormData, sprintSchema } from "@/lib/formSchema";
 import { toast } from "sonner";
 
 export default function SprintCreationForm({
@@ -60,7 +60,7 @@ export default function SprintCreationForm({
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: SprintFormData) => {
     await createSprintFn({
         projectId,
       ...data,

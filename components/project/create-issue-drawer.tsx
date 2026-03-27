@@ -23,7 +23,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { createIssue } from "@/actions/issues";
 import { getOrganizationUsers } from "@/actions/organizations";
 import useFetch from "@/hooks/useFetch";
-import { issueSchema } from "@/lib/formSchema";
+import { IssueFormData, issueSchema } from "@/lib/formSchema";
 import { toast } from "sonner";
 
 export default function IssueCreationDrawer({
@@ -78,7 +78,7 @@ export default function IssueCreationDrawer({
     }
   }, [isOpen, orgId]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: IssueFormData) => {
     await createIssueFn({
       projectId,
       data: {

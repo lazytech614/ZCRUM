@@ -3,7 +3,13 @@ import SprintBoard from "@/components/project/sprint-board";
 import SprintCreationForm from "@/components/project/sprint-create-form";
 import { notFound } from "next/navigation";
 
-export default async function ProjectPage({ params }: any) {
+type ProjectPageProps = {
+  params: Promise<{
+    projectId: string;
+  }>;
+};
+
+export default async function ProjectPage({ params }: ProjectPageProps) {
   const { projectId } = await params;
 
   const project = await getProject(projectId);

@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma"
+import { IssueType } from "@/types";
 import { auth } from "@clerk/nextjs/server"
 
 export async function createIssue({projectId, data}: {
@@ -160,7 +161,10 @@ export async function deleteIssue(issueId: string) {
     }
 } 
 
-export async function updateIsuue(issueId: string, data: any) {
+export async function updateIsuue(issueId: string, data: {
+    status: "TODO" | "IN_PROGRESS" | "DONE" | "IN_REVIEW", 
+    priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT"}
+) {
     try {
         const {userId, orgId} = await auth()
 
@@ -208,7 +212,7 @@ export async function updateIsuue(issueId: string, data: any) {
     }
 }
 
-export async function updateIssueOrder(updatedIssues: any) {
+export async function updateIssueOrder(updatedIssues: IssueType[]) {
    try {
         const {userId, orgId} = await auth()
 

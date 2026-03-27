@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createProject } from "@/actions/projects";
 import { BarLoader } from "react-spinners";
-import { projectSchema } from "@/lib/formSchema";
+import { ProjectFormData, projectSchema } from "@/lib/formSchema";
 import OrgSwitcher from "@/components/organization/org-switcher";
 import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
@@ -42,7 +42,7 @@ export default function CreateProjectPage() {
     fn: createProjectFn,
   } = useFetch(createProject);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ProjectFormData) => {
     if (!isAdmin) {
       alert("Only organization admins can create projects");
       return;

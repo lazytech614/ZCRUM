@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { success } from "zod";
 
-export async function createProject(data: any) {
+export async function createProject(data: { name: string, key: string, description: string }) {
     try {
         const {userId, orgId} = await auth()
 

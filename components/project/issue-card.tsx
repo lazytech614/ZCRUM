@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import UserAvatar from "../global/user-avatar";
 import IssueDetailsDialog from "./issue-details-dialog";
 import { statuses } from "@/constants/statuses";
+import { IssueType } from "@/types";
 
 const priorityColor = {
   LOW: "border-green-600",
@@ -28,7 +29,7 @@ export default function IssueCard({
   onDelete = () => {},
   onUpdate = () => {},
 }: {
-  issue: any;
+  issue: IssueType;
   showStatus?: boolean;
   onDelete?: (...args: any[]) => void;
   onUpdate?: (...args: any[]) => void;

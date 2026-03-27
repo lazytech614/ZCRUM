@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import DeleteProject from "./delete-project";
 import { fetchProjects } from "@/actions/projects";
+import { ProjectType } from "@/types";
 
 export default async function ProjectList({ orgId }: { orgId: string }) {
   const projects = await fetchProjects(orgId);
@@ -22,7 +23,7 @@ export default async function ProjectList({ orgId }: { orgId: string }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {projects.map((project: any) => (
+      {projects.map((project: ProjectType) => (
         <Card key={project.id}>
           <CardHeader>
             <CardTitle className="flex justify-between items-center">

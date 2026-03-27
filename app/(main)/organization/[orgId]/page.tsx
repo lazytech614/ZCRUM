@@ -4,7 +4,11 @@ import ProjectList from "@/components/organization/project-list"
 import UserIssues from "@/components/organization/user-issues"
 import { auth } from "@clerk/nextjs/server"
 
-const OrganisationPage = async({params}: any) => {
+type Props = {
+  params: Promise<{orgId: string}>
+}
+
+const OrganisationPage = async({params}: Props) => {
 
   const {orgId} = await params
   const {userId} = await auth()

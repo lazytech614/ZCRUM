@@ -16,11 +16,15 @@ export const projectSchema = z.object({
     .optional(),
 });
 
+export type ProjectFormData = z.infer<typeof projectSchema>;
+
 export const sprintSchema = z.object({
   name: z.string().min(1, "Sprint name is required"),
   startDate: z.date(),
   endDate: z.date(),
 });
+
+export type SprintFormData = z.infer<typeof sprintSchema>;
 
 export const issueSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -28,3 +32,5 @@ export const issueSchema = z.object({
   description: z.string().optional(),
   priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]),
 });
+
+export type IssueFormData = z.infer<typeof issueSchema>;

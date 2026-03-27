@@ -5,16 +5,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { priorities } from "@/constants/priorities"
 import { Button } from "../ui/button"
 import { X } from "lucide-react"
+import { IssueType, UserType } from "@/types"
 
-const BoardFilters = ({issues, onFilterChange}: any) => {
+const BoardFilters = ({issues, onFilterChange}: {
+  issues: IssueType[],
+  onFilterChange: (filteredIssues: IssueType[]) => void
+}) => {
+
+  console.log(issues)
 
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>([])
   const [selectedPriority, setSelectedPriority] = useState("")
 
-  const assignees = issues
-    .map((issue: any) => issue.assignee)
-    .filter((assignee: any, index: number, self: any) => index === self.findIndex((t: any) => t.id === assignee.id))
+  // Step 1: map assignees 
+  const assigneesWithUndefined = issues.map((issue: IssueType) => issue.assignee);
+
+  // Step 2: filter out undefined/null
+  const definedAssignees: UserType[] = assigneesWithUndefined.filter(
+    (assignee): assignee is UserType => assignee !== undefined && assignee !== null
+  );
+
+  // Step 3: deduplicate by id
+  const assignees = definedAssignees.filter(
+    (assignee, index, self) => self.findIndex((t) => t.id === assignee.id) === index
+  );
 
   const isFiltered = !!searchTerm || !!selectedAssignees.length || !!selectedPriority
 
